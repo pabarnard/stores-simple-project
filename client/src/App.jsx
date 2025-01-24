@@ -2,7 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import TestComponent from './components/TestComponent'
+import NewStoreForm from './components/NewStoreForm'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 function App() {
     const [count, setCount] = useState(0)
@@ -11,7 +11,7 @@ function App() {
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={ <TestComponent />}/>
+                    <Route path="/" element={ <NewStoreForm />}/>
                 </Routes>
             </BrowserRouter>
         </>
