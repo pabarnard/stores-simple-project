@@ -1,17 +1,17 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import NewStoreForm from './components/NewStoreForm'
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import AllStores from './components/AllStores'
+import ViewStore from './components/ViewStore';
 function App() {
-    const [count, setCount] = useState(0)
 
     return (
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={ <NewStoreForm />}/>
+                    <Route path="/" element={ <AllStores />} />
+                    <Route path="/stores/:id" element={ <ViewStore />} />
+                    <Route path="/stores/new" element={ <NewStoreForm />}/>
                 </Routes>
             </BrowserRouter>
         </>

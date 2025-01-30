@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-// import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NewStoreForm = () => {
     const [formInputs, setFormInputs] = useState({
@@ -9,6 +9,7 @@ const NewStoreForm = () => {
         "description": ""
     })
     const [formErrors, setFormErrors] = useState({})
+    const navigate = useNavigate();
 
     const updateFormData = (e) => {
         setFormInputs({...formInputs, [e.target.name]: e.target.value})
@@ -30,7 +31,7 @@ const NewStoreForm = () => {
                     "description": ""
                 });
                 setFormErrors({});
-                // Navigate to new route soon!
+                navigate("/");
             })
             .catch(err => {
                 // console.log(err);
@@ -42,6 +43,7 @@ const NewStoreForm = () => {
 
     return (
         <>
+            <p><button onClick={e => navigate("/")}>Back to all stores</button></p>
             <h1>Enter a new store:</h1>
             <form id="store-form" encType="multipart/form-data" onSubmit={handleFormSubmit}>
                 <div>

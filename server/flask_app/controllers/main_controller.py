@@ -22,6 +22,20 @@ def add_new_store():
     else: # Validations failed, so return the error messages
         return jsonify(new_store_form.errors), 400
 
+# Route to retrieve all stores from database
+@app.route("/api/v1/stores")
+def get_all_stores():
+    # print(store.Store.read_all_stores())
+    # print(type(store.Store.read_all_stores()))
+    return jsonify({"all_stores": store.Store.read_all_stores()}), 200
+
+# Route to read a single store by its id
+@app.route("/api/v1/stores/<id>")
+def get_one_store(id):
+    found_store = store.Store.read_one_store({"id": id})
+    # Future: handle if no store is found, so return a 404 error in that case
+    return jsonify({"this_store": None if len(found_store) == 0 else found_store[0]}), 200
+
 # Testing route only
 @app.route("/")
 def home_route():

@@ -31,3 +31,31 @@ class Store(db.Model):
         # ) # Instantiate the new store
         # db.session.add(new_store)
         # db.session.commit() # Now put in database - don't forget this line!
+
+    @classmethod
+    def read_all_stores(cls):
+        with db.engine.connect() as conn:
+            # print(conn.execute(select(cls)).all())
+            info = conn.execute(select(cls)).all() # Grab all our data
+            # for cur_row in info:
+            #     print(cur_row.tuple())
+            #     # print(type(cur_row))
+            return [cur_row._asdict() for cur_row in info] # Convert each Row into a dictionary
+        # Another way to grab data
+        # # print(db.session.scalars(select(cls)))
+        # # print(db.session.scalars(select(cls)).all())
+        # # print(db.session.execute(select(cls)).scalars().all())
+        # all_stores = db.session.scalars(select(cls)).all() # Alternate approach: db.session.execute(select(cls)).scalars().all()
+        # # print(type(all_stores[0]))
+        # # print(all_stores)
+        # return all_stores
+
+    @classmethod
+    def read_one_store(cls, data):
+        # print("TESTING")
+        with db.engine.connect() as conn:
+            # print(conn.execute(select(cls)).all())
+            info = conn.execute(select(cls).where(cls.id == uuid.UUID(data["id"]))).all() # Grab all our data
+        # print(info)
+        # this_store = db.get_or_404(cls,uuid.UUID(data["id"])) # Doesn't quite work as it
+        return [cur_row._asdict() for cur_row in info] # Convert each Row into a dictionary
