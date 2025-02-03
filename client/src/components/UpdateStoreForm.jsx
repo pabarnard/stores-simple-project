@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const NewStoreForm = () => {
+const UpdateStoreForm = () => {
+    const { id } = useParams(); // Grab path variables from route name
     const [formInputs, setFormInputs] = useState({
         "name": "",
         "employee_count": "",
@@ -15,10 +16,27 @@ const NewStoreForm = () => {
         setFormInputs({...formInputs, [e.target.name]: e.target.value})
     }
 
+    useEffect(() => {
+        axios({
+            method: "GET",
+            url: "http://localhost:5000/api/v1/stores/"+id,
+            headers: {
+                'Access-Control-Allow-Origin': 'http://localhost:5000' // Needed so back end can grab data
+            }
+        })
+        .then(res => {
+            // console.log(res);
+            setFormInputs(res.data["this_store"]);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }, [])
+
     const handleFormSubmit = e => {
         e.preventDefault();
         console.log("Button clicked");
-        axios.post("http://localhost:5000/api/v1/stores/new", formInputs, {
+        axios.put("http://localhost:5000/api/v1/stores/"+id, formInputs, {
             headers: {
                 'Content-Type': 'multipart/form-data', // To allow for flexibility in case we pass in files and other stuff down the road
                 'Access-Control-Allow-Origin': 'http://localhost:5000' // Needed so back end can grab data
@@ -31,7 +49,7 @@ const NewStoreForm = () => {
                     "description": ""
                 });
                 setFormErrors({});
-                navigate("/");
+                navigate("/stores/"+id);
             })
             .catch(err => {
                 // console.log(err);
@@ -44,7 +62,7 @@ const NewStoreForm = () => {
     return (
         <>
             <p><button onClick={e => navigate("/")}>Back to all stores</button></p>
-            <h1>Enter a new store:</h1>
+            <h1>Update your store:</h1>
             <form id="store-form" encType="multipart/form-data" onSubmit={handleFormSubmit}>
                 <div>
                     {formErrors.name ? formErrors.name.map((msg, ind) => <p key={ind}>{msg}</p>) : ''}
@@ -61,11 +79,11 @@ const NewStoreForm = () => {
                     <label htmlFor="description">Description: </label>
                     <textarea name="description" id="description" value={formInputs.description} onChange={e => updateFormData(e)} />
                 </div>
-                <input type="submit" value="Add store" />
+                <input type="submit" value="Update store" />
             </form>
             
         </>
     )
 }
 
-export default NewStoreForm;
+export default UpdateStoreForm;

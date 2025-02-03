@@ -22,6 +22,7 @@ class Store(db.Model):
             # print(insert_result.inserted_primary_key)
             # print(insert_result.inserted_primary_key[0])
             return insert_result.inserted_primary_key[0]
+        # Future: Handle if there's an issue with the connection
         
         # Alternate way to save without needing the new primary key
         # new_store = cls(
@@ -56,6 +57,26 @@ class Store(db.Model):
         with db.engine.connect() as conn:
             # print(conn.execute(select(cls)).all())
             info = conn.execute(select(cls).where(cls.id == uuid.UUID(data["id"]))).all() # Grab all our data
-        # print(info)
-        # this_store = db.get_or_404(cls,uuid.UUID(data["id"])) # Doesn't quite work as it
-        return [cur_row._asdict() for cur_row in info] # Convert each Row into a dictionary
+            # print(info)
+            # this_store = db.get_or_404(cls,uuid.UUID(data["id"])) # Doesn't quite work as it
+            return [cur_row._asdict() for cur_row in info] # Convert each Row into a dictionary
+    
+    @classmethod
+    def update_store(cls, data):
+        with db.engine.connect() as conn:
+            update_result = conn.execute(update(cls).where(cls.id == uuid.UUID(data["id"])).values(
+                name=data["name"],
+                employee_count=data["employee_count"],
+                description=data["description"]
+                )
+            )
+            conn.commit() # Don't forget this line!
+            # return [cur_row._asdict() for cur_row in update_result] # Convert each Row into a dictionary
+            return True # Temporary - a way to let the controller know the deletion was successful
+            
+    @classmethod
+    def delete_store(cls, data):
+        with db.engine.connect() as conn:
+            conn.execute(delete(cls).where(cls.id == uuid.UUID(data["id"])))
+            conn.commit() # Don't forget this line!
+            return True # Temporary - a way to let the controller know the deletion was successful
